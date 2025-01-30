@@ -2,8 +2,8 @@
 
 // test-runner.js
 // A script to automate building and testing of your programs
-// v2.2.1
-// https://github.com/max8539/test-runner
+// v2.2.2
+// https://github.com/cockatoo-dev/test-runner
 
 // This script requires Node.js to be installed on your system.
 

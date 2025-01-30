@@ -38,15 +38,15 @@ The owner and maintainers of this repository will not accept any responsibility 
   - `exampletest1.in.txt` and `exampletest1.out.txt` - a sample test input and test output file.
 - `README.md` and `README.pdf`, both of which contain the same information.
 
-If any files are missing, or have since been updated to a newer version, you can re-download them from [https://github.com/max8539/test-runner](https://github.com/max8539/test-runner), or run `git pull` if using Git to maintain the repository on your computer.
+If any files are missing, or have since been updated to a newer version, you can re-download them from [https://github.com/cockatoo-dev/test-runner](https://github.com/cockatoo-dev/test-runner), or run `git pull` if using Git to maintain the repository on your computer.
 
 ## Latest version
 
-v2.2.1
+v2.2.2
 
 ## Improvements and Contributing
 
-You are welcome to suggest improvements to test-runner.js. The best way to do so is through the Issues Board at [https://github.com/max8539/test-runner/issues](https://github.com/max8539/test-runner/issues).
+You are welcome to suggest improvements to test-runner.js. The best way to do so is through the Issues Board at [https://github.com/cockatoo-dev/test-runner/issues](https://github.com/cockatoo-dev/test-runner/issues).
 
 If you would like to take up an issue and implement the changes (especially ones given the thumbs-up label), you are welcome to fork the repository, implement the changes, and create a pull request.
 
@@ -54,7 +54,7 @@ If you would like to take up an issue and implement the changes (especially ones
 
 ## Reporting Bugs
 
-If you believe you have found a bug, please report it by creating an issue at [https://github.com/max8539/test-runner/issues](https://github.com/max8539/test-runner/issues) with the label bug-report. Please provide a description of what you did in the lead-up to encountereing the bug. If you are able to provide any other files used to help maintainers reproduce the problem, that would be much appreciated, however not a requirement.
+If you believe you have found a bug, please report it by creating an issue at [https://github.com/cockatoo-dev/test-runner/issues](https://github.com/cockatoo-dev/test-runner/issues) with the label bug-report. Please provide a description of what you did in the lead-up to encountereing the bug. If you are able to provide any other files used to help maintainers reproduce the problem, that would be much appreciated, however not a requirement.
 
 ## License information
 

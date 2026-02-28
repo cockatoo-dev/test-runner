@@ -2,7 +2,7 @@
 
 // test-runner.js
 // A script to automate building and testing of your programs
-// v2.2.2
+// v2.3.0
 // https://github.com/cockatoo-dev/test-runner
 
 // This script requires Node.js to be installed on your system.
@@ -18,7 +18,7 @@
 // file in that directory.
 // $ test-runner.js
 
-// test-runner.js Copyright (C) 2022-2024 Max Yuen & collaborators. 
+// test-runner.js Copyright (C) 2022-2026 Max Yuen & collaborators. 
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not 
 // use this software except in compliance with the License. You may obtain a 
 // copy of the License at
@@ -31,7 +31,7 @@
 // License for the specific language governing permissions and limitations 
 // under the License.
 
-console.log("test-runner.js v2.2.1\n");
+console.log("test-runner.js v2.3.0\n");
 
 class userError extends Error { };
 class failureExit extends Error { };
@@ -72,7 +72,7 @@ function checkCmdArr(arr, ref) {
     if (typeof (arr.length) != "number" || arr.length < 0) {
         throw new userError(`The value of ${ref} is invalid. \nFix the value, or remove the attribute if you do not intend to use it.`);
     }
-    for (cmd in arr) {
+    for (cmd of arr) {
         if (typeof (cmd) != "string" || cmd == "") {
             throw new userError(`${ref}: One or more commands are invalid.`);
         }
@@ -95,9 +95,34 @@ function checkFileStr(str, ref) {
 // Exit if any are invalid
 function checkConfig() {
     vvb("Checking build commands...");
+    // build
     if (config.build) {
         checkCmdArr(config.build, "build");
     }
+
+    // first_failure_exit (optional)
+    if (config.first_failure_exit != undefined && config.firstFailureExit != undefined) {
+        throw new userError("\"first_failure_exit\" and \"firstFailureExit\" are both specified. \nRemove one of these attributes.");
+    }
+    if (config.first_failure_exit != undefined && typeof (config.first_failure_exit) != "boolean") {
+        throw new userError("The value of \"first_failure_exit\" is invalid. \nFix the value, or remove the attribute if you do not intend to use it.");
+    }
+    if (config.firstFailureExit != undefined && typeof (config.firstFailureExit) != "boolean") {
+        throw new userError("The value of \"firstFailureExit\" is invalid. \nFix the value, or remove the attribute if you do not intend to use it.");
+    }
+
+    // score_exit_code (optional)
+    if (config.score_exit_code != undefined && config.scoreExitCode != undefined) {
+        throw new userError("\"score_exit_code\" and \"scoreExitCode\" are both specified. \nRemove one of these attributes.");
+    }
+    if (config.score_exit_code != undefined && typeof (config.score_exit_code) != "boolean") {
+        throw new userError("The value of \"score_exit_code\" is invalid. \nFix the value, or remove the attribute if you do not intend to use it.");
+    }
+    if (config.scoreExitCode != undefined && typeof (config.scoreExitCode) != "boolean") {
+        throw new userError("The value of \"scoreExitCode\" is invalid. \nFix the value, or remove the attribute if you do not intend to use it.");
+    }
+
+    // tests (required)
     if (config.tests == undefined) {
         throw new userError("\"tests\" attribute is missing.");
     }
@@ -115,39 +140,129 @@ function checkConfig() {
         let name = test.name || `Test ${i + 1}`;
 
         vvb(`Checking test: ${name}`);
-        if (test.run_cmd == undefined) {
+        // run_cmd (required)
+        if (test.run_cmd == undefined && test.runCmd == undefined) {
             throw new userError(`${name}: "run_cmd" attribute is missing.`);
         }
-        if (typeof (test.run_cmd) != "string" || test.run_cmd == "") {
+        if (test.run_cmd != undefined && test.runCmd != undefined) {
+            throw new userError(`${name}: "run_cmd" and "runCmd" are both specified. \nRemove one of these attributes.`);
+        }
+        if (test.run_cmd != undefined && (typeof (test.run_cmd) != "string" || test.run_cmd == "")) {
             throw new userError(`${name}: The value of "run_cmd" is invalid.`);
         }
+        if (test.runCmd != undefined && (typeof (test.runCmd) != "string" || test.runCmd == "")) {
+            throw new userError(`${name}: The value of "runCmd" is invalid.`);
+        }
+
+        // skip (optional)
         if (test.skip != undefined && (typeof (test.skip) != "boolean")) {
             throw new userError(`${name}: The value of "skip" is invalid. \nFix the value, or remove the attribute if you do not intend to use it.`);
         }
+
+        // expect_error (optional)
+        if (test.expect_error != undefined && test.expectError != undefined) {
+            throw new userError(`${name}: "expect_error" and "expectError" are both specified. \nRemove one of these attributes.`);
+        }
+        if (test.expect_error != undefined && (typeof (test.expect_error) != "boolean")) {
+            throw new userError(`${name}: The value of "expect_error" is invalid. \nFix the value, or remove the attribute if you do not intend to use it.`);
+        }
+        if (test.expectError != undefined && (typeof (test.expectError) != "boolean")) {
+            throw new userError(`${name}: The value of "expectError" is invalid. \nFix the value, or remove the attribute if you do not intend to use it.`);
+        }
+
+        // run_timeout (optional)
+        if (test.run_timeout != undefined && test.runTimeout != undefined) {
+            throw new userError(`${name}: "run_timeout" and "runTimeout" are both specified. \nRemove one of these attributes.`);
+        }
         if (test.run_timeout != undefined && (typeof (test.run_timeout) != "number" || test.run_timeout <= 0)) {
             throw new userError(`${name}: The value of "run_timeout" is invalid. \nFix the value, or remove the attribute if you do not intend to use it.`);
-        };
+        }
+        if (test.runTimeout != undefined && (typeof (test.runTimeout) != "number" || test.runTimeout <= 0)) {
+            throw new userError(`${name}: The value of "runTimeout" is invalid. \nFix the value, or remove the attribute if you do not intend to use it.`);
+        }
+
+        // before_cmds (optional)
+        if (test.before_cmds != undefined && test.beforeCmds != undefined) {
+            throw new userError(`${name}: "before_cmds" and "beforeCmds" are both specified. \nRemove one of these attributes.`);
+        }
         if (test.before_cmds != undefined) {
             checkCmdArr(test.before_cmds, `${name}: "before_cmds"`);
+        }
+        if (test.beforeCmds != undefined) {
+            checkCmdArr(test.beforeCmds, `${name}: "beforeCmds"`);
+        }
+
+        // after_cmds (optional)
+        if (test.after_cmds != undefined && test.afterCmds != undefined) {
+            throw new userError(`${name}: "after_cmds" and "afterCmds" are both specified. \nRemove one of these attributes.`);
         }
         if (test.after_cmds != undefined) {
             checkCmdArr(test.after_cmds, `${name}: "after_cmds"`);
         }
+        if (test.afterCmds != undefined) {
+            checkCmdArr(test.afterCmds, `${name}: "afterCmds"`);
+        }
+
+        // stdin_file (optional)
+        if (test.stdin_file != undefined && test.stdinFile != undefined) {
+            throw new userError(`${name}: "stdin_file" and "stdinFile" are both specified. \nRemove one of these attributes.`);
+        }
         if (test.stdin_file != undefined) {
             checkFileStr(test.stdin_file, `${name}: "stdin_file"`);
+        }
+        if (test.stdinFile != undefined) {
+            checkFileStr(test.stdinFile, `${name}: "stdinFile"`);
+        }
+
+        // stdout_file (optional)
+        if (test.stdout_file != undefined && test.stdoutFile != undefined) {
+            throw new userError(`${name}: "stdout_file" and "stdoutFile" are both specified. \nRemove one of these attributes.`);
         }
         if (test.stdout_file != undefined) {
             checkFileStr(test.stdout_file, `${name}: "stdout_file"`);
         }
+        if (test.stdoutFile != undefined) {
+            checkFileStr(test.stdoutFile, `${name}: "stdoutFile"`);
+        }
+
+        // stderr_file (optional)
+        if (test.stderr_file != undefined && test.stderrFile != undefined) {
+            throw new userError(`${name}: "stderr_file" and "stderrFile" are both specified. \nRemove one of these attributes.`);
+        }
         if (test.stderr_file != undefined) {
             checkFileStr(test.stderr_file, `${name}: "stderr_file"`);
         }
+        if (test.stderrFile != undefined) {
+            checkFileStr(test.stderrFile, `${name}: "stderrFile"`);
+        }
+
+        // files (optional)
         if (test.files != undefined && (typeof (test.files.length) != "number" || test.files.length < 0)) {
             throw new userError(`${name}: The value of "files" is invalid. \nFix the value, or remove the attribute if you do not intend to use it.`);
         }
         if (test.files != undefined) {
             for (let f = 0; f < test.files.length; f++) {
-                checkFileStr(test.files[f].check_file, `${name}: "files"[${f + 1}]: "check_file"`);
+                // check_file (required)
+                if (test.files[f].check_file == undefined && test.files[f].checkFile == undefined) {
+                    throw new userError(`${name}: "files"[${f}]: "check_file" is required. \nFix the value, or remove the object from the file array if you do not intend to use it.`);
+                }
+                if (test.files[f].check_file && test.files[f].checkFile && test.files[f].check_file != test.files[f].checkFile) {
+                    throw new userError(`${name}: "files"[${f}]: "check_file" and "checkFile" are specified with different values. \nRemove one of these attributes.`);
+                }
+                if (test.files[f].check_file != undefined) {
+                    checkFileStr(test.files[f].check_file, `${name}: "files"[${f}]: "check_file"`);
+                }
+                if (test.files[f].checkFile != undefined) {
+                    checkFileStr(test.files[f].checkFile, `${name}: "files"[${f}]: "checkFile"`);
+                }
+
+                // program_file (required, but don't expect the file to exist yet)
+                if (test.files[f].program_file == undefined && test.files[f].programFile == undefined) {
+                    throw new userError(`${name}: "files"[${f}]: "program_file" is required. \nFix the value, or remove the object from the file array if you do not intend to use it.`);
+                }
+                if (test.files[f].program_file && test.files[f].programFile && test.files[f].program_file != test.files[f].programFile) {
+                    throw new userError(`${name}: "files"[${f}]: "program_file" and "programFile" are specified with different values. \nRemove one of these attributes.`);
+                }
             }
         }
     }
@@ -202,7 +317,12 @@ function afterRun(cmds) {
 // Check that the program's stdout matches the expected stdout for test
 function checkStdout(test, testResult) {
     vvb("Checking stdout...");
-    let out = fs.readFileSync(test.stdout_file);
+    let out;
+    if (test.stdout_file) {
+        out = fs.readFileSync(test.stdout_file);
+    } else if (test.stdoutFile) {
+        out = fs.readFileSync(test.stdoutFile);
+    }
     if (testResult.stdout.toString() != out.toString()) {
         vb("Your program's stdout did not match the expected stdout.");
         vb(`Your stdout:\n${testResult.stdout.toString()}`);
@@ -215,7 +335,12 @@ function checkStdout(test, testResult) {
 // Check that the program's stderr matches the expected stderr for test
 function checkStderr(test, testResult) {
     vvb("Checking stderr...");
-    let err = fs.readFileSync(test.stderr_file);
+    let err;
+    if (test.stderr_file) {
+        err = fs.readFileSync(test.stderr_file);
+    } else if (test.stderrFile) {
+        err = fs.readFileSync(test.stderrFile);
+    }
     if (testResult.stderr.toString() != err.toString()) {
         vb("Your program's stderr did not match the expected stderr.");
         vb(`Your stderr:\n${testResult.stderr.toString()}`);
@@ -232,15 +357,43 @@ function checkFiles(test) {
     let success = true;
 
     for (let filePair of test.files) {
-        if (!(fs.existsSync(filePair.program_file) && fs.lstatSync(filePair.program_file).isFile())) {
-            vb(`The file "${filePair.program_file}" does not exist.`);
-            success = false;
-        } else {
-            out = fs.readFileSync(filePair.program_file);
-            exp = fs.readFileSync(filePair.check_file);
-            if (out.toString() != exp.toString()) {
-                vb(`The contents of files "${filePair.program_file}" and "${filePair.check_file}" do not match.`);
+        if (filePair.programFile) {
+            if (!(fs.existsSync(filePair.program_file) && fs.lstatSync(filePair.program_file).isFile())) {
+                vb(`The file "${filePair.program_file}" does not exist.`);
                 success = false;
+            } else if (filePair.checkFile) {
+                out = fs.readFileSync(filePair.programFile);
+                exp = fs.readFileSync(filePair.checkFile);
+                if (out.toString() != exp.toString()) {
+                    vb(`The contents of files "${filePair.programFile}" and "${filePair.checkFile}" do not match.`);
+                    success = false;
+                }
+            } else if (filePair.check_file) {
+                out = fs.readFileSync(filePair.programFile);
+                exp = fs.readFileSync(filePair.check_file);
+                if (out.toString() != exp.toString()) {
+                    vb(`The contents of files "${filePair.programFile}" and "${filePair.check_file}" do not match.`);
+                    success = false;
+                }
+            }
+        } else if (filePair.program_file) {
+            if (!(fs.existsSync(filePair.program_file) && fs.lstatSync(filePair.program_file).isFile())) {
+                vb(`The file "${filePair.program_file}" does not exist.`);
+                success = false;
+            } else if (filePair.checkFile) {
+                out = fs.readFileSync(filePair.program_file);
+                exp = fs.readFileSync(filePair.checkFile);
+                if (out.toString() != exp.toString()) {
+                    vb(`The contents of files "${filePair.program_file}" and "${filePair.checkFile}" do not match.`);
+                    success = false;
+                }
+            } else if (filePair.check_file) {
+                out = fs.readFileSync(filePair.program_file);
+                exp = fs.readFileSync(filePair.check_file);
+                if (out.toString() != exp.toString()) {
+                    vb(`The contents of files "${filePair.program_file}" and "${filePair.check_file}" do not match.`);
+                    success = false;
+                }
             }
         }
     }
@@ -255,29 +408,35 @@ function testRunner(test) {
 
     if (test.expect_error) {
         vvb("Expecting an error from this test.");
+    } else if (test.expectError) {
+        vvb("Expecting an error from this test.");
     }
 
     if (test.before_cmds) {
         beforeRun(test.before_cmds);
+    } else if (test.beforeCmds) {
+        beforeRun(test.beforeCmds);
     }
 
-    let inp = test.stdin_file ? fs.readFileSync(test.stdin_file) : undefined;
+    let inp = test.stdin_file ? fs.readFileSync(test.stdin_file) : (test.stdinFile ? fs.readFileSync(test.stdinFile) : undefined);
     // Convert run_timeout to milliseconds, rounded to nearest integer.
-    let to = test.run_timeout ? Math.round(test.run_timeout * 1000) : undefined;
-    vvb(test.run_cmd);
-    testResult = spawnSync(test.run_cmd, { input: inp, shell: true, timeout: to });
+    let to = test.run_timeout != undefined ? Math.round(test.run_timeout * 1000) : (test.runTimeout != undefined ? Math.round(test.runTimeout * 1000) : undefined);
+
+    let runCommand = test.run_cmd ? test.run_cmd : test.runCmd;
+    vvb(runCommand);
+    testResult = spawnSync(runCommand, { input: inp, shell: true, timeout: to });
     if (testResult.signal) {
         vb(`Your program was killed with signal ${testResult.signal}.`);
-        if (testResult == "SIGTERM" && test.run_timeout) {
+        if (testResult.signal == "SIGTERM" && (test.run_timeout || test.runTimeout)) {
             vb("A SIGTERM signal may indicate the program being killed for exceeding the specified timeout.");
         }
         return false;
     }
-    if (testResult.status != 0 && !test.expect_error) {
+    if (testResult.status != 0 && !test.expect_error && !test.expectError) {
         vb("Your program ran into an error:");
         vb(testResult.stdout.toString() + testResult.stderr.toString());
         return false;
-    } else if (testResult.status == 0 && test.expect_error) {
+    } else if (testResult.status == 0 && (test.expect_error || test.expectError)) {
         vb("This test was expecting an error, but your program finished normally:");
         vb(testResult.stdout.toString() + testResult.stderr.toString());
         return false;
@@ -286,7 +445,13 @@ function testRunner(test) {
     if (test.stdout_file) {
         success = checkStdout(test, testResult) && success;
     }
+    if (test.stdoutFile) {
+        success = checkStdout(test, testResult) && success;
+    }
     if (test.stderr_file) {
+        success = checkStderr(test, testResult) && success;
+    }
+    if (test.stderrFile) {
         success = checkStderr(test, testResult) && success;
     }
     if (test.files) {
@@ -294,6 +459,9 @@ function testRunner(test) {
     }
     if (test.after_cmds) {
         success = afterRun(test.after_cmds) && success;
+    }
+    if (test.afterCmds) {
+        success = afterRun(test.afterCmds) && success;
     }
 
     return success;
@@ -326,13 +494,13 @@ function runTests() {
             numSuccess += 1;
         } else {
             vb(`${RED}${testName} failed.${RESET}`)
-            if (config.first_failure_exit) {
+            if (config.first_failure_exit || config.firstFailureExit) {
                 throw new failureExit();
             }
         }
     }
 
-    // Calcualte statistics, display results message
+    // Calculate statistics, display results message
     // Conditions for colours:
     // 100% (all passed) = GREEN
     // >=90% or only 1 test failed, >0 tests passed = YELLOW

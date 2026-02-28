@@ -42,7 +42,7 @@ If any files are missing, or have since been updated to a newer version, you can
 
 ## Latest version
 
-v2.2.2
+v2.3.0
 
 ## Improvements and Contributing
 
@@ -58,7 +58,7 @@ If you believe you have found a bug, please report it by creating an issue at [h
 
 ## License information
 
-**test-runner.js Copyright © 2022-2024 Max Yuen & collaborators.**  
+**test-runner.js Copyright © 2022-2026 Max Yuen & collaborators.**  
 
 **Licensed under the Apache License, Version 2.0 (the "License"); you may not use this software except in compliance with the License. You may obtain a copy of the License at**
 
@@ -159,8 +159,8 @@ Ensure that you enter the names of attributes exactly as shown below, and the da
 | ---------------------------------------------------------------------- | --------- | ----------- |
 | [`"verbose"`](#22---verbosity-settings)                                | Optional  | Set the amount of information to be shown in the terminal. |
 | [`"build"`](#23---build-commands)                                      | Optional  | Specify an array of commands to build or compile your program. |
-| [`"first_failure_exit"`](#24-run-all-tests--or-stop-when-a-test-fails) | Optional  | If `true`, stops testing if any test fails. |
-| [`"score_exit_code"`](#25-returning-the-final-score-as-the-exit-code)  | Optional  | If `true`, returns the percentage score through the exit code. |
+| [`"first_failure_exit"` or `"firstFailureExit"`](#24-run-all-tests--or-stop-when-a-test-fails) | Optional  | If `true`, stops testing if any test fails. |
+| [`"score_exit_code"` or `"scoreExitCode"`](#25-returning-the-final-score-as-the-exit-code)  | Optional  | If `true`, returns the percentage score through the exit code. |
 | [`"tests"`](#26---specifying-your-tests)                               | Required  | Specify an array of test objects to define the tests that are run. See [3 - Writing Your Tests](#3---writing-your-tests). |
 
 ### 2.2 - Verbosity Settings
@@ -171,7 +171,7 @@ Set `"verbose"` to the level of verbosity (information printed) that you wish to
 
 - `0` - Print only the final result after running all tests, or an error message if tests could not be run.
 - `1` - Print everything in level 0. Print out the stages of the script as they are being executed. Print out more information about errors that are encountered. Also print out the test names as they are run, and print out information about why your program did not pass certain tests, if this occurs.
-- `2` - Print everything in levels 0 and 1. Print out the shell commands that are run by the scrript, as they are executed in different stages of the script, and print out the stages of test checking as they happen.
+- `2` - Print everything in levels 0 and 1. Print out the shell commands that are run by the script, as they are executed in different stages of the script, and print out the stages of test checking as they happen.
 
 `"verbose"` should always be set to a numeric value.
 
@@ -187,30 +187,30 @@ If `"build"` is not present, no build commands will be run. This may be appropri
 
 ### 2.4 Run All Tests, or Stop when a Test Fails
 
-Attribute: `"first_failure_exit"` (optional, default: `false`)
+Attribute: `"first_failure_exit"` or `"firstFailureExit"` (optional, default: `false`)
 
 Determine if all tests should be run, or if testing should stop as soon a a single test fails.
 
-if `"first_failure_exit"` is set to `true`, testing will stop immediately if any test fails, and an error message will be printed.
+if `"first_failure_exit"` or `"firstFailureExit"` is set to `true`, testing will stop immediately if any test fails, and an error message will be printed.
 
-If `"first_failure_exit"` is set to `false`, all tests will be run and a score will be given at the end.
+If `"first_failure_exit"` or `"firstFailureExit"` is set to `false`, all tests will be run and a score will be given at the end.
 
 ### 2.5 Returning the Final Score as the Exit Code
 
-Attribute `"score_exit_code"` (optional, default: `false`)
+Attribute `"score_exit_code"` or `"scoreExitCode"` (optional, default: `false`)
 
-If `"score_exit_code"` is set to `true`:
+If `"score_exit_code"` or `"scoreExitCode"` is set to `true`:
 
 - An exit code of `128` will be returned if an error was encountered outside of running tests on your program, such as if a build or setup command encountered an error.
 - If all tests were run and the script runs successfully, the exit code will be set as `100 - [percentage of tests passed]`. This is set so that an exit code of `0`, which conventionally indicates a program running successfully, corresponds to passing all tests. The actual percentage score can be found by calculating `100 - [exit code]`.
 
-If `"score_exit_code"` is set to `false`:
+If `"score_exit_code"` or `"scoreExitCode"` is set to `false`:
 
 - An exit code of `128` will be returned if an error was encountered outside of running tests on your program, such as if a build or setup command encountered an error.
 - An exit code of `1` will be returned if the script was able to run successfully and one or more tests failed.
 - An exit code of `0` will be returned if the script was able to run successfully and run all tests, regardless of the results from the tests.
 
-**This attribute is ignored if `"first-failure-exit"` is set to `true`.**
+**This attribute is ignored if `"first_failure_exit"` or `"firstFailureExit"` is set to `true`.**
 
 ### 2.6 - Specifying Your Tests
 
@@ -260,15 +260,15 @@ Ensure that you enter the names of attributes exactly as shown below, and the da
 | Name                                                                     | Required? | Description |
 | ------------------------------------------------------------------------ | --------- | ----------- |
 | [`"name"`](#32---naming-your-test)                                       | Optional  | Specify a name for your test. |
-| [`"expect_error"`](#33---expecting-an-error-from-your-program)           | Optional  | If `true`, the test expects an error from your program. |
-| [`"before_cmds"`](#34---run-commands-before-running-your-program)        | Optional  | Specify one or more commands to be run before your program is run. |
-| [`"run_cmd"`](#35---running-your-program)                                | Required  | Specify the command to run your program. |
-| [`"run_timeout"`](#36---setting-a-timeout-for-your-program)              | Optional  | Set a timeout in seconds for your program. |
-| [`"stdin_file"`](#37---specify-input-for-your-program)                   | Optional  | Specify a file whose contents will be passed to `stdin` of your program. |
-| [`"stdout_file"`](#38---specify-expected-output-from-your-program)       | Optional  | Specify a file whose contents will be checked against the `stdout` of your program. |
-| [`"stderr_file"`](#39---specify-expected-error-output-from-your-program) | Optional  | Specify a file whose contents will be checked against the `stderr` of your program. |
+| [`"expect_error"` or `"expectError"`](#33---expecting-an-error-from-your-program)           | Optional  | If `true`, the test expects an error from your program. |
+| [`"before_cmds"` or `"beforeCmds"`](#34---run-commands-before-running-your-program)        | Optional  | Specify one or more commands to be run before your program is run. |
+| [`"run_cmd"` or `"runCmd"`](#35---running-your-program)                                | Required  | Specify the command to run your program. |
+| [`"run_timeout"` or `"runTimeout"`](#36---setting-a-timeout-for-your-program)              | Optional  | Set a timeout in seconds for your program. |
+| [`"stdin_file"` or `"stdinFile"`](#37---specify-input-for-your-program)                   | Optional  | Specify a file whose contents will be passed to `stdin` of your program. |
+| [`"stdout_file"` or `"stdoutFile"`](#38---specify-expected-output-from-your-program)       | Optional  | Specify a file whose contents will be checked against the `stdout` of your program. |
+| [`"stderr_file"` or `"stderrFile"`](#39---specify-expected-error-output-from-your-program) | Optional  | Specify a file whose contents will be checked against the `stderr` of your program. |
 | [`"files"`](#310---specify-files-to-be-checked)                          | Optional  | Specify one or more files produced by your program, and files containing the content that you expect. See [3.10 - Specify Files to be Checked](#310---specify-files-to-be-checked). |
-| [`"after_cmds"`](#311---run-commands-after-running-your-program)         | Optional  | Specify one or more commands to be run after your program is run. |
+| [`"after_cmds"` or `"afterCmds"`](#311---run-commands-after-running-your-program)         | Optional  | Specify one or more commands to be run after your program is run. |
 | [`"skip"`](#312---skip-a-test)                                           | Optional  | If `true`, skips this test and continues on to the next test. |
 
 ### 3.2 - Naming Your Test
@@ -281,67 +281,67 @@ If present, `"name"` should always be set to a non-empty string.
 
 ### 3.3 - Expecting an Error from Your Program
 
-Attribute: `"expect_error"` (optional, default: `false`)
+Attribute: `"expect_error"` or `"expectError"` (optional, default: `false`)
 
-Set `"exoect_error"` to `true` if you expect your program to return a non-zero exit code when run in this test. Your test will now pass if your program encounters an error, provided that other checks in the test also pass. The test will fail if the program exits normally with an exit code of `0`.
+Set `"expect_error"` or `"expectError"` to `true` if you expect your program to return a non-zero exit code when run in this test. Your test will now pass if your program encounters an error, provided that other checks in the test also pass. The test will fail if the program exits normally with an exit code of `0`.
 
-If you expect your program to finish normally, set `"expect_error"` to `false`. The test will now fail if your program encounters an error.
+If you expect your program to finish normally, set `"expect_error"` or `"expectError"` to `false`. The test will now fail if your program encounters an error.
 
 ### 3.4 - Run Commands Before Running Your Program
 
-Attribute: `"before_cmds"` (optional, skipped if not present)
+Attribute: `"before_cmds"` or `"beforeCmds"` (optional, skipped if not present)
 
-Set `"before_cmds"` to an array of one or more commands which should be run before running your program in the test. These can be useful for performing any setup needed before runing your test. All commands should be written as non-empty strings. These commands will be run once, in the order they are written in the array. If any command fails, testing will stop and an error message will be shown. No further tests will be run.
+Set `"before_cmds"` or `"beforeCmds"` to an array of one or more commands which should be run before running your program in the test. These can be useful for performing any setup needed before runing your test. All commands should be written as non-empty strings. These commands will be run once, in the order they are written in the array. If any command fails, testing will stop and an error message will be shown. No further tests will be run.
 
-If present, `"before_cmds"` should always be set to an array containing one or more non-empty string elements.
+If present, `"before_cmds"` or `"beforeCmds"` should always be set to an array containing one or more non-empty string elements.
 
 If not present, no commands will be run before running your program.
 
 ### 3.5 - Running Your Program
 
-Attribute: `"run_cmd"` (required)
+Attribute: `"run_cmd"` or `"runCmd"` (required)
 
-Set `"run_cmd"` to the command used to run your program, including any arguments passed to the program. Commands should be written exactly as how you would enter it in a terminal at the project's root directory.
+Set `"run_cmd"` or `"runCmd"` to the command used to run your program, including any arguments passed to the program. Commands should be written exactly as how you would enter it in a terminal at the project's root directory.
 
-`"run_cmd"` should always be set to a non-empty string.
+`"run_cmd"` or `"runCmd"` should always be set to a non-empty string.
 
 ### 3.6 - Setting a Timeout for Your Program
 
-Attribute: `"run_timeout"` (optional, skipped if not present)
+Attribute: `"run_timeout"` or `"runTimeout"` (optional, skipped if not present)
 
-Set `"run_timeout"` to the number of seconds your program should be allowed to run before it is killed. This can be useful for stopping a program that enters an infinite loop or other non-terminating condition. If your program is killed, the test will be considered to be failed.
+Set `"run_timeout"` or `"runTimeout"` to the number of seconds your program should be allowed to run before it is killed. This can be useful for stopping a program that enters an infinite loop or other non-terminating condition. If your program is killed, the test will be considered to be failed.
 
-If present `"run_timeout"` should always be set to a numeric value.
+If present `"run_timeout"` or `"runTimeout"` should always be set to a numeric value.
 
 If not present, no limit will be set on the amount of time your program can run.
 
 ### 3.7 - Specify Input for Your Program
 
-Attribute: `"stdin_file"` (optional, skipped if not present)
+Attribute: `"stdin_file"` or `"stdinFile"` (optional, skipped if not present)
 
-Set `"stdin_file"` to the path to a file relative to the root directory of your project containing the input to be passed to the `stdin` of your program for this test (this is anything you type into the terminal while your program is running). If your program prompts for inputs multiple times, each input should be placed on a separate line, not including the prompt printed by your program, with exactly one newline character separating each input.
+Set `"stdin_file"` or `"stdinFile"` to the path to a file relative to the root directory of your project containing the input to be passed to the `stdin` of your program for this test (this is anything you type into the terminal while your program is running). If your program prompts for inputs multiple times, each input should be placed on a separate line, not including the prompt printed by your program, with exactly one newline character separating each input.
 
-If present, `"stdin_file"` should always be set to a string.
+If present, `"stdin_file"` or `"stdinFile"` should always be set to a string.
 
 If not present, no input will be passed to your program. If the program then waits for input, the test may not complete.
 
 ### 3.8 - Specify Expected Output from Your Program
 
-Attribute: `"stdout_file"` (optional, skipped if not present)
+Attribute: `"stdout_file"` or `"stdoutFile"` (optional, skipped if not present)
 
-Set `"stdout_file"` to the path to a file relative to the root directory of your project containing the output you expect from the `stdout` of your program for this test, including all whitespace and newlines (this is usually everything printed by your program to the terminal, including any prompts for input, unless you know that you are printing to `stedrr` instead). The `stdout` from your program will be checked after your program is ran, and it must exactly match the contents of the file provided for the test to pass.
+Set `"stdout_file"` or `"stdoutFile"` to the path to a file relative to the root directory of your project containing the output you expect from the `stdout` of your program for this test, including all whitespace and newlines (this is usually everything printed by your program to the terminal, including any prompts for input, unless you know that you are printing to `stedrr` instead). The `stdout` from your program will be checked after your program is ran, and it must exactly match the contents of the file provided for the test to pass.
 
-If present, `"stdout_file"` should always be set to a string.
+If present, `"stdout_file"` or `"stdoutFile"` should always be set to a string.
 
 If not present, the `stdout` of your program will not be checked when the test is run.
 
 ### 3.9 - Specify Expected Error Output from Your Program
 
-Attribute: `"stderr_file"` (optional, skipped if not present)
+Attribute: `"stderr_file"` or `"stderrFile"` (optional, skipped if not present)
 
-Set `"stderr_file"` to the path to a file relative to the root directory of your project containing the output you expect from the `stderr` of your program for this test, including all whitespace and newlines. The `stderr` from your program will be checked after your program is ran, and it must exactly match the contents of the file provided for the test to pass.
+Set `"stderr_file"` or `"stderrFile"` to the path to a file relative to the root directory of your project containing the output you expect from the `stderr` of your program for this test, including all whitespace and newlines. The `stderr` from your program will be checked after your program is ran, and it must exactly match the contents of the file provided for the test to pass.
 
-If present, `"stderr_file"` should always be set to a string.
+If present, `"stderr_file"` or `"stderrFile"` should always be set to a string.
 
 If not present, the `stderr` of your program will not be checked when the test is run.
 
@@ -351,10 +351,10 @@ Attribute: `"files"` (optional, skipped if not present)
 
 Set `"files"` to be an array of objects (enclosed by curly braces `{}`), each with the following attributes:
 
-- `"program_file"`: The path from the root directory of your project to the file produced by your program
-- `"check_file"`: The path from the root directory of your project to the file containing the expected contents of the file specified in `"program_file"` for this test.
+- `"program_file"` or `"programFile"`: The path from the root directory of your project to the file produced by your program
+- `"check_file"` or `"checkFile"`: The path from the root directory of your project to the file containing the expected contents of the file specified in `"program_file"` or `"programFile"` for this test.
 
-Multiple such objects can be specified if multiple files produced by your program should be checked. The contents of each `"program_file"` specified must exactly match its corresponding `"check_file"` for the test to pass.
+Multiple such objects can be specified if multiple files produced by your program should be checked. The contents of each `"program_file"` or `"programFile"` specified must exactly match its corresponding `"check_file"` or `"checkFile"` for the test to pass.
 
 If present, `"files"` should always be specified as an array containing objects.
 
@@ -362,11 +362,11 @@ If not present, no files will be checked when running your test.
 
 ### 3.11 - Run Commands After Running Your Program
 
-Attribute: `"after_cmds"` (optional, skipped if not present)
+Attribute: `"after_cmds"` or `"afterCmds"` (optional, skipped if not present)
 
-Set `"after_cmds"` to an array of one or more commands which should be run after running your program in the test. These can be useful for running more advanced checks as part of your test. All commands should be written as non-empty strings. These commands will be run once, in the order they are written in the array. If any command fails (exits with a non-zero exit code), the test will be considered to have failed, and remaining commands will not be run.
+Set `"after_cmds"` or `"afterCmds"` to an array of one or more commands which should be run after running your program in the test. These can be useful for running more advanced checks as part of your test. All commands should be written as non-empty strings. These commands will be run once, in the order they are written in the array. If any command fails (exits with a non-zero exit code), the test will be considered to have failed, and remaining commands will not be run.
 
-If present, `"after_cmds"` should always be set to an array containing one or more non-empty string elements.
+If present, `"after_cmds"` or `"afterCmds"` should always be set to an array containing one or more non-empty string elements.
 
 If not present, no commands will be run after running your program.
 

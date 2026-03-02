@@ -2,7 +2,7 @@
 
 // test-runner.js
 // A script to automate building and testing of your programs
-// v2.3.0
+// v2.3.1
 // https://github.com/cockatoo-dev/test-runner
 
 // This script requires Node.js to be installed on your system.
@@ -31,7 +31,7 @@
 // License for the specific language governing permissions and limitations 
 // under the License.
 
-console.log("test-runner.js v2.3.0\n");
+console.log("test-runner.js v2.3.1\n");
 
 class userError extends Error { };
 class failureExit extends Error { };
@@ -358,8 +358,8 @@ function checkFiles(test) {
 
     for (let filePair of test.files) {
         if (filePair.programFile) {
-            if (!(fs.existsSync(filePair.program_file) && fs.lstatSync(filePair.program_file).isFile())) {
-                vb(`The file "${filePair.program_file}" does not exist.`);
+            if (!(fs.existsSync(filePair.programFile) && fs.lstatSync(filePair.programFile).isFile())) {
+                vb(`The file "${filePair.programFile}" does not exist.`);
                 success = false;
             } else if (filePair.checkFile) {
                 out = fs.readFileSync(filePair.programFile);
